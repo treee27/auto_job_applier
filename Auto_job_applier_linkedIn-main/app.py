@@ -7,7 +7,8 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-PATH = 'all excels/'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PATH = os.path.join(BASE_DIR, "all excels")
 ##> ------ Karthik Sarode : karthik.sarode23@gmail.com - UI for excel files ------
 @app.route('/')
 def home():
@@ -28,7 +29,14 @@ def get_applied_jobs():
 
     try:
         jobs = []
-        with open(PATH + 'all_applied_applications_history.csv', 'r', encoding='utf-8') as file:
+        #csv_file = PATH + 'all_applied_applications_history.csv'
+
+        # print("Looking for:", os.path.abspath(csv_file))
+        # print("Exists:", os.path.exists(csv_file))
+        #with open(PATH + 'all_applied_applications_history.csv', 'r', encoding='utf-8') as file:
+        csv_file = os.path.join(PATH, "all_applied_applications_history.csv")
+
+        with open(csv_file, 'r', encoding='utf-8') as file:
             reader = csv.DictReader(file)
             for row in reader:
                 jobs.append({
@@ -63,11 +71,10 @@ def update_applied_date(job_id):
     """
     try:
         data = []
-        csvPath = PATH + 'all_applied_applications_history.csv'
+        csvPath = os.path.join(PATH, "all_applied_applications_history.csv")
         
         if not os.path.exists(csvPath):
             return jsonify({"error": f"CSV file not found at {csvPath}"}), 404
-            
         # Read current CSV content
         with open(csvPath, 'r', encoding='utf-8') as file:
             reader = csv.DictReader(file)
